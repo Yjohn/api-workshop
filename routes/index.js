@@ -1,30 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const dbClient = require('../helper/dbClient.js');
 
-/* GET home page. */
+const Product = require('../models/Product');
+const mongoose = require('mongoose');
+const mongoConnection = process.env.MONGODB_URI || 'mongodb://localhost:27017/apiworkshop';
 
-router.get('/', function(req, res, next) {
+
+router.get('/', function (req, res, next) {
     const callBack = (error, products) => {
         if (error) {
             res.sendStatus(500)
         } else {
             res.render('index', {
-                title: 'AcmeInc',
+                title: 'CYF',
                 description: 'We sell the finest goods and services.',
-                products,
+                products
             });
         }
     }
-     dbClient.getProducts({}, callBack)
- 
+
+    mongoose.connect(mongoConnection);
+    Product.find({}, callBack);
+
 });
 
 /* GET single-product information page. */
-
-
-router.get('/products/:urlPath', function(req, res, next) {
-    const urlPath = req.params.urlPath;
+router.get('/products/:id', function (req, res, next) {
+    const id = req.params.Id;
     const callBack = (error, products) => {
         if (error) {
             res.sendStatus(500)
@@ -33,11 +35,13 @@ router.get('/products/:urlPath', function(req, res, next) {
                 title: products[0].title,
                 description: `We sell the finest goods and services. 
          This is the ${products[0].title}.`,
-                 product: products[0]
+                product: products[0]
             });
         }
     }
-     dbClient.getProducts({ urlPath }, callBack);
+
+    mongoose.connect(mongoConnection);
+    Product.findById(id, callback);
 
 });
 

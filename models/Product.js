@@ -10,6 +10,6 @@ const schema = new Schema({
     isTopRated: Boolean
 });
 
-const Products = mongoose.model('products', schema);
+const Products = mongoose.model('product', schema);
 
 module.exports = Products;
